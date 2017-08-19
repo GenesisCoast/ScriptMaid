@@ -42,7 +42,7 @@
         }],
         "configuration": {
             "properties": {
-                "scriptmaid.language.formatDisable": {
+                "scriptmaid.formatDisable": {
                     "description": "Disable formatting for a specific language.",
                     "type": "array",
                     "items": {
@@ -58,7 +58,7 @@
                       ]
                     }
                 },
-                "scriptmaid.powershell.ruleDisable": {
+                "scriptmaid.ruleDisable": {
                     "description": "Disable specific powershell rules.",
                     "type": "array",
                     "items": {
