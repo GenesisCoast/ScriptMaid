@@ -13,7 +13,7 @@ ext install scriptmaid
 ## Features
 
 Can format, order and lint for various scripting languages based on a rule system. Currently supported languages are:
-- Powershell: [Overveiew](./docs/ps_rules.md) | [Styling](./docs/ps_rules/styling.md) | [Ordering](./docs/ps_rules/ordering.md) | [Linting](./docs/ps_rules/linting.md)
+- Powershell: [Overview](./docs/ps_rules.md) | [Styling](./docs/ps_rules/styling.md) | [Ordering](./docs/ps_rules/ordering.md) | [Linting](./docs/ps_rules/linting.md)
 
 ## Extension Settings
 
