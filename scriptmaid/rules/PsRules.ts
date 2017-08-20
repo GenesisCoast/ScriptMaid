@@ -2,7 +2,7 @@ import { Rule, IRules } from './../models/rule';
 
 export class PsRules implements IRules {
 
-    public styles: Rule[];
+    public pattern: RegExp = /function\s(\w+)\(.*\)\s*.*{/g;
           
     public rules: Rule[] = [
         {

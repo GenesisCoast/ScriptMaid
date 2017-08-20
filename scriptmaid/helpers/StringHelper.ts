@@ -1,4 +1,4 @@
-export class StringUtils {
+export class StringHelper {
     
     public static contains(text: string, contains: string): boolean {
         if (text.indexOf(contains) >= 0) {

@@ -22,24 +22,46 @@
         "vscode": "^1.15.0"
     },
     "categories": [
-        "Formatters"
+        "Formatters",
+        "Linters",
+        "Snippets"
     ],
     "activationEvents": [
-        "onCommand:extension.formatActiveDoc",
-        "onCommand:extension.orderActiveDoc"
+        "onCommand:scriptmaid.formatActiveDoc",
+        "onCommand:scriptmaid.orderActiveDoc"
     ],
     "icon": "",
-    "main": "./out/src/extension",
+    "main": "./out/scriptmaid/extension",
     "contributes": {
         "commands": [
         {
-            "command": "extension.formatActiveDoc",
+            "command": "scriptmaid.formatActiveDoc",
             "title": "ScriptMaid: Format Active Document"
         },
         {
-            "command": "extension.orderActiveDoc",
+            "command": "scriptmaid.orderActiveDoc",
             "title": "ScriptMaid: Order Active Document"
+        },
+        {
+            "command": "scriptmaid.context.formatDoc",
+            "title": "Format Document"
+        },
+        {
+            "command": "scriptmaid.context.orderDoc",
+            "title": "Order Document"
         }],
+        "menus": {
+            "editor/context": [
+            {
+                "command": "scriptmaid.formatActiveDoc",
+                "group": "1_modification"
+            },
+            {
+                "command": "scriptmaid.orderActiveDoc",
+                "group": "1_modification"
+            }              
+            ]
+        },
         "configuration": {
             "properties": {
                 "scriptmaid.formatDisable": {

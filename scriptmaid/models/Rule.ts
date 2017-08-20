@@ -2,8 +2,8 @@ export interface IRules {
 
         rules: Rule[];
 
-        styles: Rule[];
-
+        pattern: RegExp;
+        
 }
 
 export class Rule {
