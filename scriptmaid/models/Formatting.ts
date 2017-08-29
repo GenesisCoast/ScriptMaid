@@ -1,19 +1,13 @@
-export interface IRules {
+export class Formatting {
 
-        rules: Rule[];
-
-        pattern: RegExp;
-        
-}
-
-export class Rule {
+        public code: string;
 
         public title: string;
-
+        
         public url?: string;
 
         public match: RegExp;
 
         public replace?: string;
-    
+
 }

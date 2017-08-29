@@ -1,4 +1,6 @@
-import { IRules } from './models/rule';
+import { CodeHelper } from './helpers/CodeHelper';
+import { Ordering, OrderModes } from './models/Ordering';
+import { IRule } from './models/IRule';
 import { RegexHelper } from './helpers/RegexHelper';
 import { StringHelper } from './helpers/StringHelper';
 import { CodeBlock } from './models/codeBlock';
@@ -6,60 +8,86 @@ import { CodeBlock } from './models/codeBlock';
 // Reorders specific blocks of code to be in Alphabetical order.
 export class OrderCode {
 
+    private newText: string;
+
     constructor(
-        private vsText: string,
-        private langRules: IRules
-    ) { }
+        private readonly _vsText: string,
+        private readonly _langRules: IRule
+    ) { this.newText = _vsText; }
 
     public order(): string {
-        let blocks = this.matchCodeBlocks(this.langRules.pattern);
-        let sortedBlocks = CodeBlock.sortByName(blocks);
-        return CodeBlock.buildCode(blocks);
-    }
-
-    public getMatchingBracketLine(textBlock: string, lineNo: number): number {
-        // Text Lines and Line No.
-        let textLines = StringHelper.getLines(textBlock);
-
-        // Number of Parenthesis found.
-        let start: number = 0;
-        let end: number = 0;
-
-        // Keep Looping until matching Parenthesis is found. 
-        do {
-            if (StringHelper.contains(textLines[lineNo], "{")) {
-                let x: number = start;
-                start = x + 1;
-            }   
-            else if (StringHelper.contains(textLines[lineNo], "}")) {
-                let x: number = end;
-                end = x + 1;
+        // Order the rules, desc added to top
+        Ordering.sortByOrderDesc(this._langRules.order).forEach(rule => {
+            let blocks: CodeBlock[];
+            switch (rule.mode) {
+                case OrderModes.RespectParent:
+                    
+                    break;
+                case OrderModes.ExcludeParent:
+                    break;
+                case OrderModes.ParentOnly:
+                    // Get matching code blocks for parent only    
+                    // blocks = this.matchCodeBlocks(
+                    //     RegexHelper.inverseRemove(rule.parent, this.newText),
+                    //     rule.match,
+                    //     rule.sortBy
+                    // );
+                    break;
+                default:
+                    blocks = this.matchCodeBlocks(this.newText, rule);
+                    break;
             }
-            lineNo++;
-        } while (start != end && lineNo < textLines.length) 
-        return lineNo;
+            let sortedBlocks = CodeBlock.sortByName(blocks);
+            this.newText = StringHelper.insertAtStart(this.newText, CodeBlock.buildCode(blocks));    
+        });
+        return this.newText;
     }
 
-    public matchCodeBlocks(pattern: RegExp): CodeBlock[] {
+    
+
+    public matchCodeBlocks(text:string, rule: Ordering, targetGroup: number = 1): CodeBlock[] {
         // Results, and Text Block in Lines.
-        let textLines = StringHelper.getLines(this.vsText);
+        const textLines = StringHelper.getLines(this._vsText);
         let results: CodeBlock[] = [];
 
         // Iterate through lines and record matches.
         for (var startLine = 0; startLine < textLines.length; startLine++) {
             let line = textLines[startLine];
             // Check if the line matches.
-            if (textLines[startLine].match(pattern)) {
+            if (line.match(rule.singleLine)) {
                 // Get CodeBlock ending line.
-                let endLine = this.getMatchingBracketLine(this.vsText, startLine);
+                let endLine = CodeHelper.getBracketEndLine(this._vsText, startLine, ["{", "}"]);
+                let code = StringHelper.getTextFromRange(this._vsText, startLine, endLine);
+
+                // Record new block info.
                 results.push(new CodeBlock(
-                    RegexHelper.getTargetGroup(line, pattern).toString(),
-                    StringHelper.getTextFromRange(this.vsText, startLine, endLine).toString()
+                    RegexHelper.getTargetGroup(line, rule.singleLine, targetGroup).toString(),
+                    code
                 ));
+
+                this.newText = this.newText.replace(code.trim(), "").trim(); // Remove code from old pos
+                startLine = endLine; // Jump index to end of block
+            }
+            else if (line.match(rule.multiLine)) {
+                // Get CodeBlock ending line.
+                let midLine = CodeHelper.getBracketEndLine(this._vsText, startLine, ["(", ")"]);
+                let endLine = CodeHelper.getBracketEndLine(this._vsText, midLine, ["{", "}"]);
+                let code = StringHelper.getTextFromRange(this._vsText, startLine, endLine);
+                
+                // Record new block info.
+                results.push(new CodeBlock(
+                    RegexHelper.getTargetGroup(line, rule.multiLine, targetGroup).toString(),
+                    code
+                ));
+
+                this.newText = this.newText.replace(code.trim(), "").trim(); // Remove code from old pos
+                startLine = endLine; // Jump index to end of block
             }
         }
         return results;
     }
+
+    
 
 }
 

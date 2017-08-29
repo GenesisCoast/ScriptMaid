@@ -15,10 +15,17 @@ export class StringHelper {
         let lines = this.getLines(textBlock);
         let results: string[] = [];
 
-        for (let i = startLine; (i < lines.length) && (i != endLine); i++) {
+        for (let i = startLine; (i < lines.length) && (i <= endLine); i++) {
             results.push(lines[i]);
         }
         return results.join("\n");
+    }
+
+    public static insertAtStart(oldText: string, insertText: string, newLine: boolean = true): string {
+        if (newLine) {
+            return insertText + "\n\n" + oldText;
+        }
+        return insertText + "\n" + oldText;
     }
     
 }

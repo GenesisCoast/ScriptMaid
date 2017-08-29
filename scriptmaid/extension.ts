@@ -1,4 +1,4 @@
-import { IRules } from './models/rule';
+import { IRule } from './models/IRule';
 import { StatusBarHelper } from './helpers/StatusBarHelper';
 import { CodeBlock } from './models/codeBlock';
 import { StringHelper } from './helpers/StringHelper';
@@ -16,8 +16,6 @@ import {
 export function activate(context: ExtensionContext) {
 
     // const config = workspace.getConfiguration('scriptmaid');
-    const ps = new PsRules().rules;
-
     // config.get('', false)
 
     let document = window.activeTextEditor.document;
@@ -53,7 +51,7 @@ function getDocumentRange(document: TextDocument): Range {
     return new Range(0, 0, lastLineId, document.lineAt(lastLineId).text.length);
 }
 
-function getLanguageRules(): IRules {
+function getLanguageRules(): IRule {
     switch (window.activeTextEditor.document.languageId) {
         case "powershell":
             return new PsRules();

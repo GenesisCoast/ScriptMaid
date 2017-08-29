@@ -1,22 +1,24 @@
-import { IRules } from './models/rule';
+import { IRule } from './models/IRule';
 
 // Formats the provided code, by the specified rule set.
 export class FormatCode {
 
     constructor(
-        private vsText: string,
-        private langRules: IRules
+        private readonly _vsText: string,
+        private readonly _langRules: IRule
     ) { }
 
     public format(): string {
-        let result: string = this.vsText;
 
-        // Loop through all the Language Rules.
-        for (var i = 0; i < this.langRules.rules.length; i++) {
-            var rule = this.langRules.rules[i];
+        // Result text.
+        let result: string = this._vsText;
+
+        // Iterate through each rule and apply
+        this._langRules.format.forEach(rule => {
             result = result.replace(rule.match, rule.replace);
-        }
+        });
         return result;
+
     }
 
 }
